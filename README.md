@@ -1,0 +1,63 @@
+# Sistem Manajemen Kafe (Point of Sale & Membership)
+
+Sistem Web POS dan Manajemen Kafe modern yang dirancang untuk kasir dan administrator guna mengelola meja, menu, pesanan, transaksi pembayaran, serta program loyalitas pelanggan (member & poin).
+
+## 🚀 Fitur Utama
+1. **Point of Sale (POS) / Kasir (`kasir.php`)**
+   - Pencatatan pesanan berdasarkan meja yang tersedia.
+   - Sistem keranjang belanja interaktif (tambah, kurangi, hapus item).
+   - Pembayaran dengan kalkulasi otomatis (total belanja, potongan poin, jumlah bayar, kembalian).
+   - Cetak struk belanja langsung (Print-friendly format).
+
+2. **Buka Pesanan Baru (`pesanan.php` & `kasir.php`)**
+   - Toggle Tipe Pelanggan: **Tamu Biasa** atau **Member Terdaftar**.
+   - **Searchable Dropdown Member:** Pencarian member terdaftar secara interaktif menggunakan nama atau nomor HP secara langsung.
+   - **Pendaftaran Member Baru Instan:** Opsi mendaftarkan tamu biasa sebagai member baru langsung saat checkout/buka pesanan.
+
+3. **Program loyalitas Pelanggan (`pelanggan.php`)**
+   - Perhitungan poin otomatis (belanja kelipatan Rp 10.000 mendapatkan 1 poin).
+   - Penukaran poin sebagai diskon pembayaran (1 poin bernilai potongan Rp 100).
+   - Log audit poin member (transaksi kredit/debet poin, detail riwayat belanja).
+   - Validasi ketat nomor telepon (wajib berupa angka/integer dan tidak boleh kembar antar member resmi).
+
+4. **Manajemen Meja (`meja.php`)**
+   - Status meja dinamis (**Kosong** / **Terisi**).
+   - Pembatasan pembukaan pesanan baru jika meja sedang terisi.
+
+5. **Manajemen Menu & Kategori (`menu.php` & `kategori.php`)**
+   - Pengelolaan katalog makanan/minuman beserta gambar, kategori, harga, dan ketersediaan stok.
+
+6. **Laporan Keuangan & Audit (`laporan.php`)**
+   - Rekap omzet, total transaksi, total member terdaftar, serta tabel rincian transaksi harian.
+
+---
+
+## 🔒 Manajemen Keamanan: Session & Cookie
+
+Aplikasi ini mengimplementasikan sistem durasi sesi adaptif yang ketat untuk melindungi data penting kasir/admin saat meninggalkan komputer:
+
+### 1. Batas Kedaluwarsa Sesi (Session Expiry)
+* **Aturan Utama:** Sesi kasir/admin akan kedaluwarsa dan terhapus **5 detik** setelah seluruh tab browser yang membuka sistem ditutup.
+* **Cara Kerja:** Cookie `PHPSESSID` diatur dengan parameter `lifetime = 5` detik.
+
+### 2. Mekanisme Heartbeat (Menjaga Sesi Aktif)
+* **Masalah:** Jika session cookie hanya berumur 5 detik, kasir akan ter-logout otomatis saat membaca layar pesanan tanpa berpindah halaman.
+* **Solusi:** Di latar belakang, script Javascript (`assets/js/main.js`) akan mengirimkan ping AJAX ke file (`heartbeat.php`) setiap **2 detik** sekali.
+* Ping ini memicu pembaruan cookie lifetime di browser agar diperpanjang +5 detik ke depan.
+* **Hasil Akhir:** Sesi tetap aktif selama tab web terbuka di browser. Namun, ketika tab ditutup, ping terhenti, dan sesi terhapus otomatis setelah 5 detik berlalu.
+
+### 3. Cookie "Ingat Saya" (Remember Me Cookie)
+* **Nama Cookie:** `kafe_remember`
+* **Masa Aktif:** 7 hari.
+* **Keamanan:** Cookie ini ditandatangani (signed) menggunakan algoritma **HMAC SHA-256** rahasia untuk mencegah pemalsuan identitas (cookie tampering).
+* **Fungsi:** Jika kasir mencentang opsi **"Ingat Saya"** saat login, status login mereka akan pulih otomatis meskipun sesi 5 detik telah kedaluwarsa.
+
+---
+
+## ⚙️ Cara Menjalankan Project
+1. Clone / salin folder project ke direktori server lokal Anda (misalnya `htdocs` pada XAMPP).
+2. Nyalakan layanan **Apache** dan **MySQL** pada control panel XAMPP.
+3. Import database:
+   - Buat database baru bernama `db_kafe`.
+   - Jalankan script SQL pada berkas `database.sql` atau akses script migrasi instan via `setup.php` di browser.
+4. Akses sistem melalui alamat: `http://localhost/tubes-web/`
