@@ -56,8 +56,14 @@ Aplikasi ini mengimplementasikan sistem durasi sesi adaptif yang ketat untuk mel
 
 ## ⚙️ Cara Menjalankan Project
 1. Clone / salin folder project ke direktori server lokal Anda (misalnya `htdocs` pada XAMPP).
-2. Nyalakan layanan **Apache** dan **MySQL** pada control panel XAMPP.
-3. Import database:
-   - Buat database baru bernama `db_kafe`.
+2. Salin berkas `.env.example` menjadi `.env` di folder root:
+   ```bash
+   cp .env.example .env
+   ```
+3. Konfigurasikan kredensial database Anda pada berkas `.env`. 
+   - **Lokal (MySQL):** Gunakan driver `mysql` (port bawaan `3306`).
+   - **Supabase (PostgreSQL):** Ubah `DB_CONNECTION` menjadi `pgsql`, sesuaikan host (misalnya `aws-0-ap-southeast-1.pooler.supabase.com`), port (`6543`), database, username, password, dan aktifkan `DB_SSLMODE=require`.
+4. Nyalakan layanan **Apache** dan **MySQL/PostgreSQL** sesuai dengan database yang dipilih.
+5. Import database:
    - Jalankan script SQL pada berkas `database.sql` atau akses script migrasi instan via `setup.php` di browser.
-4. Akses sistem melalui alamat: `http://localhost/tubes-web/`
+6. Akses sistem melalui alamat: `http://localhost/tubes-web/`
