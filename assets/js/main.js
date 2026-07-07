@@ -76,11 +76,12 @@ function showToast(message, type = 'success') {
     }, 4000);
 }
 
-// Session heartbeat to keep session active while page is open (5 seconds expiry protection)
+
+// Session heartbeat to keep session active while page is open (60 seconds expiry protection)
 document.addEventListener('DOMContentLoaded', function() {
     const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
     
-    // Kirim ping setiap 2 detik jika user sudah login (tidak di halaman login)
+    // Kirim ping setiap 30 detik jika user sudah login (tidak di halaman login)
     if (!window.location.pathname.endsWith('login.php')) {
         setInterval(function() {
             fetch(basePath + 'heartbeat.php')
@@ -91,10 +92,26 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     return response.json();
                 })
-                .then(data => {
-                    // Berhasil update session
-                })
                 .catch(err => console.log('Heartbeat error:', err));
-        }, 2000); // 2 detik
+        }, 30000); // 30 detik
+    }
+});
+
+// Sidebar Toggle Logic for Mobile
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.querySelector('.app-sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    
+    if (sidebarToggle && sidebar && overlay) {
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('show');
+            overlay.classList.toggle('show');
+        });
+        
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+        });
     }
 });

@@ -388,7 +388,7 @@ $stmt_meja_kosong = $conn->query("SELECT id, nomor_meja, kapasitas FROM meja WHE
 $daftar_meja_kosong = $stmt_meja_kosong->fetchAll();
 
 // Load pelanggan untuk modal Pesanan Baru
-$stmt_pelanggan_all = $conn->query("SELECT id, nama_pelanggan FROM pelanggan ORDER BY id ASC");
+$stmt_pelanggan_all = $conn->query("SELECT id, nama_pelanggan, telepon FROM pelanggan ORDER BY id ASC");
 $daftar_pelanggan = $stmt_pelanggan_all->fetchAll();
 
 include 'includes/header.php';

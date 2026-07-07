@@ -16,9 +16,9 @@ if (session_status() === PHP_SESSION_NONE) {
     ini_set('session.use_strict_mode', 1);
     ini_set('session.cookie_samesite', 'Strict');
     
-    // Set cookie lifetime ke 5 detik (delay 5 detik saat web ditutup)
+// Set cookie lifetime ke 0 (berakhir saat browser ditutup)
     session_set_cookie_params([
-        'lifetime' => 5,
+        'lifetime' => 0,
         'path' => '/',
         'httponly' => true,
         'samesite' => 'Strict'
@@ -27,14 +27,18 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Perbarui masa berlaku cookie session agar tetap aktif selama user membuka web
-if (isset($_COOKIE[session_name()])) {
-    setcookie(session_name(), session_id(), [
-        'expires' => time() + 5, // 5 detik dari sekarang
-        'path' => '/',
-        'httponly' => true,
-        'samesite' => 'Strict'
-    ]);
+// Cek timeout berdasarkan heartbeat (jika tab ditutup, sesi mati dalam ~60 detik)
+if (isset($_SESSION['user_id'])) {
+    $timeout = 60; // 60 detik batas waktu dari ping terakhir atau muat halaman terakhir
+    
+    if (isset($_SESSION['last_heartbeat']) && (time() - $_SESSION['last_heartbeat'] > $timeout)) {
+        // Sesi expired karena tab dianggap sudah ditutup (tidak ada heartbeat)
+        session_unset();
+        session_destroy();
+    } else {
+        // Perbarui waktu aktivitas/heartbeat terakhir saat memuat halaman
+        $_SESSION['last_heartbeat'] = time();
+    }
 }
 
 // =========================================================

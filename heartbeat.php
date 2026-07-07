@@ -8,9 +8,12 @@ require_once 'config/auth.php';
 header('Content-Type: application/json');
 
 if (isset($_SESSION['user_id'])) {
+    // Perbarui waktu heartbeat agar sesi tidak dianggap mati
+    $_SESSION['last_heartbeat'] = time();
+    
     echo json_encode([
         'status' => 'active',
-        'expires_in' => 5
+        'expires_in' => 60
     ]);
 } else {
     http_response_code(401);

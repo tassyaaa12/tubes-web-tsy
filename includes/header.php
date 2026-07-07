@@ -27,15 +27,21 @@ require_auth();
 <body>
     <div class="app-wrapper">
         <!-- Sidebar Navigation -->
+        <div class="sidebar-overlay"></div>
         <?php include 'includes/sidebar.php'; ?>
         
         <!-- Main Content Wrapper -->
         <main class="main-content">
             <!-- Content Header -->
             <div class="content-header">
-                <div class="header-title">
-                    <h1><?= isset($page_title) ? htmlspecialchars($page_title) : "Dashboard" ?></h1>
-                    <p class="text-muted"><?= isset($page_desc) ? htmlspecialchars($page_desc) : "Selamat datang di panel kontrol Sistem Manajemen Kafe." ?></p>
+                <div class="header-title d-flex align-items-center gap-3">
+                    <button id="sidebarToggle" class="btn btn-outline-secondary d-md-none border-0" aria-label="Toggle Sidebar">
+                        <i class="fa-solid fa-bars fs-4"></i>
+                    </button>
+                    <div>
+                        <h1><?= isset($page_title) ? htmlspecialchars($page_title) : "Dashboard" ?></h1>
+                        <p class="text-muted mb-0"><?= isset($page_desc) ? htmlspecialchars($page_desc) : "Selamat datang di panel kontrol Sistem Manajemen Kafe." ?></p>
+                    </div>
                 </div>
                 <div class="header-action d-flex align-items-center gap-3">
                     <!-- Tanggal -->

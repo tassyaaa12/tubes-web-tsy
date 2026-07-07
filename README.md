@@ -30,6 +30,11 @@ Sistem Web POS dan Manajemen Kafe modern yang dirancang untuk kasir dan administ
 6. **Laporan Keuangan & Audit (`laporan.php`)**
    - Rekap omzet, total transaksi, total member terdaftar, serta tabel rincian transaksi harian.
 
+7. **Desain Responsif (Mobile Friendly)**
+   - Tampilan antarmuka yang dapat menyesuaikan secara dinamis untuk perangkat *mobile* dan *tablet*.
+   - *Sidebar* navigasi model *off-canvas* dengan tombol *hamburger menu*.
+   - Tabel data yang dapat di-*scroll* secara horizontal (*overflow-x: auto*) di layar kecil untuk mencegah *layout* berantakan.
+
 ---
 
 ## 🔒 Manajemen Keamanan: Session & Cookie
@@ -37,14 +42,14 @@ Sistem Web POS dan Manajemen Kafe modern yang dirancang untuk kasir dan administ
 Aplikasi ini mengimplementasikan sistem durasi sesi adaptif yang ketat untuk melindungi data penting kasir/admin saat meninggalkan komputer:
 
 ### 1. Batas Kedaluwarsa Sesi (Session Expiry)
-* **Aturan Utama:** Sesi kasir/admin akan kedaluwarsa dan terhapus **5 detik** setelah seluruh tab browser yang membuka sistem ditutup.
-* **Cara Kerja:** Cookie `PHPSESSID` diatur dengan parameter `lifetime = 5` detik.
+* **Aturan Utama:** Sesi kasir/admin akan kedaluwarsa dan terhapus secara otomatis di server **60 detik** setelah seluruh tab browser yang membuka sistem ditutup.
+* **Cara Kerja:** Cookie `PHPSESSID` diatur agar berakhir saat browser ditutup (`lifetime = 0`), namun di sisi *server*, PHP mengecek waktu aktivitas terakhir (*last heartbeat*).
 
 ### 2. Mekanisme Heartbeat (Menjaga Sesi Aktif)
-* **Masalah:** Jika session cookie hanya berumur 5 detik, kasir akan ter-logout otomatis saat membaca layar pesanan tanpa berpindah halaman.
-* **Solusi:** Di latar belakang, script Javascript (`assets/js/main.js`) akan mengirimkan ping AJAX ke file (`heartbeat.php`) setiap **2 detik** sekali.
-* Ping ini memicu pembaruan cookie lifetime di browser agar diperpanjang +5 detik ke depan.
-* **Hasil Akhir:** Sesi tetap aktif selama tab web terbuka di browser. Namun, ketika tab ditutup, ping terhenti, dan sesi terhapus otomatis setelah 5 detik berlalu.
+* **Masalah:** Tanpa deteksi aktivitas, server tidak dapat mengetahui secara pasti kapan pengguna menutup *tab* browser.
+* **Solusi:** Di latar belakang, script Javascript (`assets/js/main.js`) akan mengirimkan sinyal ping AJAX ke file (`heartbeat.php`) setiap **30 detik** sekali.
+* Ping ini memberitahu server untuk memperbarui *timestamp* sesi agar terhindar dari batas *timeout* 60 detik.
+* **Hasil Akhir:** Sesi tetap aktif secara normal selama setidaknya satu tab web terbuka di browser. Namun, ketika tab ditutup, ping terhenti, dan sesi akan terhapus secara aman dan otomatis setelah batas **60 detik** berlalu (mengurangi beban server drastis dibandingkan konfigurasi lama 5 detik).
 
 ### 3. Cookie "Ingat Saya" (Remember Me Cookie)
 * **Nama Cookie:** `kafe_remember`
